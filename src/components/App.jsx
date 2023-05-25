@@ -43,7 +43,7 @@ export class App extends Component {
     const { search} = this.state; 
    
     if (search !== prevState.search) {
-      this.setState({  status: STATUS.loading })
+       this.setState({  status: STATUS.loading })
       const images = await getImages({search, page:1});
       this.setState({ images: images, page: 2, status: STATUS.succes })
     }
