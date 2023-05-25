@@ -27,8 +27,7 @@ export class App extends Component {
   }
 
   handleOnButtonClick = async () => {
-    this.setState({ status: STATUS.loading, page: this.state.page + 1 })
-    
+      this.setState(prevState => ({  status: STATUS.loading, page: prevState.page + 1}));
       try {
         const { search, page } = this.state;
         const images = await getImages({search, page });
