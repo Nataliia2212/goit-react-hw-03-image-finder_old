@@ -9,7 +9,7 @@ import { Button } from './Button/Button';
 const STATUS = {
   idle: 'idle',
   loading: 'loading',
-  succes: 'succses',
+  succes: 'succes',
   error: 'error'
 }
 
@@ -28,6 +28,18 @@ export class App extends Component {
 
   handleOnButtonClick = async () => {
       this.setState(prevState => ({  status: STATUS.loading, page: prevState.page + 1}));
+  }
+
+  async componentDidUpdate(_, prevState) {
+    const { search, page} = this.state; 
+   
+    if (search !== prevState.search) {
+       this.setState({images: [],  status: STATUS.loading })
+      const images = await getImages({search, page:1});
+      this.setState({ images: images, page: 2, status: STATUS.succes })
+    }
+
+    if (page !== prevState.page) {
       try {
         const { search, page } = this.state;
         const images = await getImages({search, page });
@@ -36,16 +48,8 @@ export class App extends Component {
         this.setState({status: STATUS.error})
         console.error(error);
       }
-  }
-
-  async componentDidUpdate(_, prevState) {
-    const { search} = this.state; 
-   
-    if (search !== prevState.search) {
-       this.setState({  status: STATUS.loading })
-      const images = await getImages({search, page:1});
-      this.setState({ images: images, page: 2, status: STATUS.succes })
     }
+
   }
   
 
@@ -62,7 +66,7 @@ export class App extends Component {
            />}
         {status === STATUS.loading && <Loader/>}
        
-        {images.length > 0  && <Button onButtonClick={()=>{this.handleOnButtonClick(page)}} />}
+        {(images.length > 0 && status === STATUS.succes)  && <Button onButtonClick={()=>{this.handleOnButtonClick(page)}} />}
         
       </div>
     )
