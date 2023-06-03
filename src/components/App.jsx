@@ -23,7 +23,7 @@ export class App extends Component {
   }
 
   handleFormSubmit = search => {
-    this.setState({ search })
+    this.setState({ search, images: [], status: STATUS.loading, page:1 })
   }
 
   handleOnButtonClick = async () => {
@@ -33,18 +33,12 @@ export class App extends Component {
   async componentDidUpdate(_, prevState) {
     const { search, page} = this.state; 
    
-    if (search !== prevState.search) {
-       this.setState({images: [],  status: STATUS.loading })
-      const images = await getImages({search, page:1});
-      this.setState({ images: images, page: 2, status: STATUS.succes })
-    }
-
-    if (page !== prevState.page) {
+    if (search !== prevState.search || page !== prevState.page) {
       try {
         const { search, page } = this.state;
-        const images = await getImages({search, page });
+        const images = await getImages({ search, page });
         this.setState(state => ({images: [...state.images, ...images], status: STATUS.succes}));
-      } catch (error) {
+    } catch (error) {
         this.setState({status: STATUS.error})
         console.error(error);
       }
@@ -52,7 +46,6 @@ export class App extends Component {
 
   }
   
-
   render() {
     const { images, page, status} = this.state
        
